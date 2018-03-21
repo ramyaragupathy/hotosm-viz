@@ -17,8 +17,16 @@
 </head>
 
 <body>
-    <div class='queries'>
-        <div class='note error col11 pad1x' style='display:none'>
+        
+    <div class='queries col4 pad2 '>
+            <div id ='desc' class='prose prose-big quiet space-bottom4 '>
+                    <p>
+                        Hi there! Zoom in to your area of interest & pick a time slot
+                        from the dropdown here. Hit `Fetch Data` to see all the Edits
+                        in the area within your chosen timeframe!
+                    </p>
+                </div>
+        <div class='note warning col11 pad1x' style='display:none'>
             <p></p>
         </div>
         <form id='QueryForm'>
@@ -35,12 +43,13 @@
 
             <div class='col6'>
                 <div class='loading fill-gray' style='display:none'></div>
-                <a href='#' id='submit' class='button'>Submit</a>
-                <a href='#' target='_blank' class='button fill-green' id='download' style='display:none'>Download</a>
+                <a href='#' id='submit' class='button'>Fetch Data</a>
             </div>
         </form>
+       
     </div>
-
+    <div id='count' class="col4 pad2 prose prose-big"></div>
+    <div id="menu" class="bottom-right"></div>
     <div id='map'></div>
  
 </body>

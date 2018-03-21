@@ -815,14 +815,14 @@ mapboxgl.accessToken = 'pk.eyJ1IjoicnVtYyIsImEiOiJjamJhdHJzODUxMGUyMnFub2l3cTlmM
 let map = new mapboxgl.Map({
   container: 'map', // container id
   style: 'mapbox://styles/mapbox/light-v9', // stylesheet location
-  center: [-74.50, 40], // starting position [lng, lat]
+  center: [-122.2014, 37.7758], // starting position [lng, lat]
   zoom: 9, // starting zoom
   hash: true
 })
 var geocoder = new MapboxGeocoder({
   accessToken: mapboxgl.accessToken
 })
-map.addControl(geocoder, 'top-right')
+map.addControl(geocoder)
 var nav = new mapboxgl.NavigationControl()
 map.addControl(nav, 'top-left')
 $('#fromdate').val(moment().format('YYYY-MM-DD[T]00:00:01'))
@@ -862,6 +862,9 @@ function getQuery () {
 
   return url
 }
+function handleClick (cb) {
+  console.log('Clicked, new value = ' + cb.checked)
+}
 
 function getData (callback) {
   var url = getQuery()
@@ -871,6 +874,25 @@ function getData (callback) {
       console.log('osm ', data)
       var geojson = osmtogeojson(data)
       console.log('osm to geojson ', geojson)
+      var ways = geojson.features.filter(function (item) {
+        if (item.id.startsWith('way')) {
+          return item
+        }
+      })
+      var rels = geojson.features.filter(function (item) {
+        if (item.id.startsWith('relation')) {
+          return item
+        }
+      })
+      var nodes = geojson.features.filter(function (item) {
+        if (item.id.startsWith('node')) {
+          return item
+        }
+      })
+
+      console.log('Ways ', ways.length)
+      console.log('Rels ', rels.length)
+      console.log('nodes ', nodes.length)
       map.getSource('overpassDataSource').setData(geojson)
       map.addLayer({
         'id': 'node',
@@ -904,11 +926,28 @@ function getData (callback) {
         'filter': ['==', '$type', 'Polygon']
       })
 
+      let countStr = `<p><h3>Feature breakdown:</h3>
+      <input type="checkbox"  name="node" onclick="console.log('node');" id="node" checked="true">
+      <label for="node">Nodes: ${nodes.length}</label><br>
+      <input type="checkbox" name="way" id="way" checked="true">
+      <label for="way">Ways: ${ways.length}</label><br>
+      <input type="checkbox" name="rel" id="rel" checked="true">
+      <label for="rel">Relations: ${rels.length}</label>
+      </p>`
+      document.getElementById('count').classList.add('fill-gray')
+      document.getElementById('count').innerHTML = countStr
+      $('node').on('click', function(e) {
+        console.log('node')
+    });
       $('.loading').css('display', 'none')
     })
     .fail(function () {
+      errorNotice('Too much data to fetch, zoom in further')
     })
 }
+
+
+
 function errorNotice (message, time) {
   $('.note').css('display', 'block')
   $('.note p').text(message)
@@ -924,6 +963,9 @@ function errorNotice (message, time) {
 }
 
 $('#submit').on('click', function () {
+  document.getElementById('count').innerHTML = ''
+  document.getElementById('count').classList.remove('fill-gray')
+
   let zoom = map.getZoom()
   if (zoom >= 5) {
     formData = {
@@ -936,7 +978,6 @@ $('#submit').on('click', function () {
   } else {
     errorNotice('Zoom in further to fetch results')
   }
-
 })
 
 },{"moment":8,"osmtogeojson":11,"util":4}],6:[function(require,module,exports){
