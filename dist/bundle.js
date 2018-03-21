@@ -819,12 +819,12 @@ let map = new mapboxgl.Map({
   zoom: 9, // starting zoom
   hash: true
 })
-map.addControl(new MapboxGeocoder({
+var geocoder = new MapboxGeocoder({
   accessToken: mapboxgl.accessToken
-}))
+})
+map.addControl(geocoder, 'top-right')
 var nav = new mapboxgl.NavigationControl()
 map.addControl(nav, 'top-left')
-
 $('#fromdate').val(moment().format('YYYY-MM-DD[T]00:00:01'))
 $('#todate').val(moment().format('YYYY-MM-DD[T]HH:mm:ss'))
 
@@ -909,16 +909,34 @@ function getData (callback) {
     .fail(function () {
     })
 }
+function errorNotice (message, time) {
+  $('.note').css('display', 'block')
+  $('.note p').text(message)
+  if (time) {
+    window.setTimeout(function () {
+      $('.note').css('display', 'none')
+    }, time)
+  } else {
+    window.setTimeout(function () {
+      $('.note').css('display', 'none')
+    }, 2000)
+  }
+}
 
 $('#submit').on('click', function () {
-  formData = {
-    'fromDate': moment($('#fromdate').val()).utc().toISOString(),
-    'toDate': moment($('#todate').val()).utc().toISOString()
+  let zoom = map.getZoom()
+  if (zoom >= 5) {
+    formData = {
+      'fromDate': moment($('#fromdate').val()).utc().toISOString(),
+      'toDate': moment($('#todate').val()).utc().toISOString()
+    }
+    var url = getQuery()
+    console.log('from submit before fetching ', url)
+    getData()
+  } else {
+    errorNotice('Zoom in further to fetch results')
   }
-  var url = getQuery()
-  console.log('from submit before fetching ', url)
-  getData()
-  // console.log('from submit after conversion ', data)
+
 })
 
 },{"moment":8,"osmtogeojson":11,"util":4}],6:[function(require,module,exports){

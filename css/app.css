@@ -1,3 +1,7 @@
+.mapboxgl-ctrl-logo{
+    display: none !important;
+}
+
 .queries {
     margin-top: 20px;
     margin-left: 20px;
@@ -35,4 +39,3 @@
 .note {
     margin-bottom: 10px;
 }
-
