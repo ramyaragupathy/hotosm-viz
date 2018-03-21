@@ -11,4 +11,4 @@ Prototype for [HOTOSM Outreachy project](https://www.outreachy.org/2018-may-augu
 * Map area in view is by default taken to be the bounding box for the query
 * Choose the right map view by navigating the map
 * Choose in the time period, both start and end period
-* On hitting `Submit`, all data changes, within a given time period, over a specific geographic area is obtained from OSM using overpass query. This is then rendered on map.
+* On hitting `Submit`, all data changes, within a given time period, over a specific geographic area is obtained from OSM using [overpass](https://overpass-turbo.eu/) query. This is then rendered on map.
