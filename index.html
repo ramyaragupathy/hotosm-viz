@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>Display a map</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" type="text/css" href="css/app.css">
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.2.0/mapbox-gl-geocoder.min.js'></script>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.2.0/mapbox-gl-geocoder.css' type='text/css' />
+
+</head>
+
+<body>
+    <div class='queries'>
+        <div class='note error col11 pad1x' style='display:none'>
+            <p></p>
+        </div>
+        <form id='QueryForm'>
+            <fieldset class='col6'>
+                <label>From</label>
+                <input id='fromdate' type='datetime-local' placeholder='yyyy-MM-dd' />
+            </fieldset>
+            </br>
+
+            <fieldset class='col6'>
+                <label>To</label>
+                <input id='todate' type='datetime-local' placeholder='yyyy-MM-dd' />
+            </fieldset>
+
+            <div class='col6'>
+                <div class='loading fill-gray' style='display:none'></div>
+                <a href='#' id='submit' class='button'>Submit</a>
+                <a href='#' target='_blank' class='button fill-green' id='download' style='display:none'>Download</a>
+            </div>
+        </form>
+    </div>
+
+    <div id='map'></div>
+</body>
+<script src="dist/bundle.js"></script>
+
+</html>

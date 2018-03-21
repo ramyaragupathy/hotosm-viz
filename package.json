@@ -1,0 +1,17 @@
+{
+  "name": "hotosm-viz",
+  "version": "1.0.0",
+  "description": "outreachy project for hotosm",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ramya Ragupathy",
+  "license": "ISC",
+  "dependencies": {
+    "browserify": "^11.2.0",
+    "moment": "^2.10.6",
+    "osmtogeojson": "^2.2.5"
+  },
+  "devDependencies": {}
+}
