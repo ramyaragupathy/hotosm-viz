@@ -1,8 +1,7 @@
+# HOTOSM map-viz
+Protoype for [HOTOSM Outreachy project](https://www.outreachy.org/2018-may-august/communities/humanitarian-openstreetmap-team/#create-a-reusable-map-visualization)
 
-# map-viz
-Protoype for HOTOSM Outreachy project
-
-# development
+# Local development
 * `npm install`
 * `browserify js/app.js > dist/bundle.js`
 * `python -m http.server`
