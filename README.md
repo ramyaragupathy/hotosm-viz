@@ -29,7 +29,7 @@ This is like questioning OpenStreetMap on `Hey, show me all the edits made in Ba
 4. Using [planet](https://planet.openstreetmap.org/)/[geofabrik](http://download.geofabrik.de/)/[metro extracts](https://mapzen.com/documentation/metro-extracts/) and then write a script to extract specifc data from downloaded extracts 
 
 All the above options have their merits in different situations. 
-Let's dig our question ``Hey, show me all the edits made in Bangalore today` to understand which option is better.
+Let's dig our question `Hey, show me all the edits made in Bangalore today` to understand which option is better.
 
 This question has three parts to it:
 1. `all the edits` - this is inclusive of all the feature types - buildings, highways. This part can be made very specific to say `all building edits` or `all highway edits`
@@ -45,12 +45,19 @@ OpenStreetMap API|:heavy_multiplication_x:|only rectangluar bounding box|:heavy_
 Overpass (read only API)|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:
 [planet](https://planet.openstreetmap.org/)/[geofabrik](http://download.geofabrik.de/)/[metro extracts](https://mapzen.com/documentation/metro-extracts/)|custom script|custom script|custom script
 
+Obvious choice is Overpass API. In general Overpass is great for:
 
-Overpass is great for:
 - Querying features by [OSM tags](https://wiki.openstreetmap.org/wiki/Tags)
 - Looking for features that was edited within a time range
 - Find features added by a particular user or group of users
 - Querying rectangular bounding boxes and polygon boundaries
+
+But before we go ahead, it's necessary to understand limitations to Overpass like:
+
+- Complex queries fetching a large volume of data (>20MB) usually fails
+- Queries that span a really large area of the map fails
+- Queries that span a bigger timeframe also fails as it involves bulk data
+- There's a cap on number of queries that could be sent to Overpass from a particular IP at a given time. If two people from the same Wi-fi network try to query Overpass, only one query is accepted, other automatically fails.
 
 ### Implementing Data Extaction
 
