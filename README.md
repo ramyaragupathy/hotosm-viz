@@ -72,7 +72,31 @@ But before we go ahead, it's necessary to understand limitations to Overpass lik
   let bbox = south + ',' + west + ',' + north + ',' + east
   ```
 
-Time filter
+**Time filter** - Provide two field to gather start date and end date for the query. Default sets to today's timeframe.
+
+![image](https://user-images.githubusercontent.com/12103383/37754543-ef84723a-2dc7-11e8-9642-306330ccbb52.png)
+
+**Tag filter** - Yet to be implemented
+
+On hitting `Fetch Data`, overpass query is constructed on the fly. Eg:
+
+```https://www.overpass-api.de/api/interpreter?data=[out:xml][timeout:25];(node (changed:'2018-03-21T18:30:01.000Z','2018-03-22T06:25:14.000Z') (12.227550060708552,76.3482848025194,14.011214271757382,78.9857151974922));(way (changed:'2018-03-21T18:30:01.000Z','2018-03-22T06:25:14.000Z')(12.227550060708552,76.3482848025194,14.011214271757382,78.9857151974922));(rel (changed:'2018-03-21T18:30:01.000Z','2018-03-22T06:25:14.000Z') (12.227550060708552,76.3482848025194,14.011214271757382,78.9857151974922));out body;>;out body qt;```
+
+This is sent to the overpass API and the result is obtained in `xml` format. Other options include `json` and `csv` format. Whatever be the format, response data has to be processed further to get `geojson` data. From `xml` format, data is converted to `geojson` using `[osmtogeojson](https://github.com/tyrasd/osmtogeojson)` module.
+
+### Visualising data
+
+Processed data is separated into three layers(node, way, relation) for map viz using [mapbox-gl js](https://www.mapbox.com/mapbox-gl-js/api/) and the count for each geometry is shown in the side bar. 
+
+Color|Feature
+------|--------
+![image](https://user-images.githubusercontent.com/12103383/37755046-e11aa7ee-2dc9-11e8-902c-68d7a14a9877.png)|relations
+![image](https://user-images.githubusercontent.com/12103383/37755077-fca271ea-2dc9-11e8-871b-a942b64f4481.png)|ways
+![image](https://user-images.githubusercontent.com/12103383/37755094-0bfb70a6-2dca-11e8-9102-ff78b259d37e.png)|nodes
+
+This could when tag filering comes into play. Geometry layering would change to tag related layering style
+
+**View by geometry/feature** - Each geometry type has a checkbox next to it. Based on what is checked, layers should display/disappear on the map
 
 
 
