@@ -42,7 +42,7 @@ Option|Feature filtering|Geography filter|Time filter
 ------|-----------------|----------------|-----------
 Query OpenStreetMap directly from user interface using `Export` option| :heavy_multiplication_x:|only rectangluar bounding box|:heavy_multiplication_x:
 OpenStreetMap API|:heavy_multiplication_x:|only rectangluar bounding box|:heavy_multiplication_x:
-Overpass (read only API)|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:
+Overpass (read only API)|:heavy_check_mark:|:heavy_check_mark: (rectangular + polygon)|:heavy_check_mark:
 [planet](https://planet.openstreetmap.org/)/[geofabrik](http://download.geofabrik.de/)/[metro extracts](https://mapzen.com/documentation/metro-extracts/)|custom script|custom script|custom script
 
 Obvious choice is Overpass API. In general Overpass is great for:
@@ -60,6 +60,19 @@ But before we go ahead, it's necessary to understand limitations to Overpass lik
 - There's a cap on number of queries that could be sent to Overpass from a particular IP at a given time. If two people from the same Wi-fi network try to query Overpass, only one query is accepted, other automatically fails.
 
 ### Implementing Data Extaction
+
+**Geography filter** - Start with a rectangular bounding box form map view, that is get the bounds of the map from the current map view on the right pane. Use this bounds to construct a rectangular bbox This should be extended to accomodate any polygon boundary
+
+```javascript
+  let bounds = map.getBounds()
+  let north = bounds['_ne'].lat
+  let east = bounds['_ne'].lng
+  let south = bounds['_sw'].lat
+  let west = bounds['_sw'].lng
+  let bbox = south + ',' + west + ',' + north + ',' + east
+  ```
+
+Time filter
 
 
 
