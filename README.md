@@ -7,6 +7,8 @@ Prototype for [HOTOSM Outreachy project](https://www.outreachy.org/2018-may-augu
 * `python -m http.server`
 
 # How does it work?
+![working](https://user-images.githubusercontent.com/12103383/37751157-e53a5512-2db6-11e8-87f3-3531a1444fe7.gif)
+
 * By default, time period is set for current date and current time
 * Map area in view is by default taken to be the bounding box for the query
 * Choose the right map view by navigating the map
