@@ -34,14 +34,14 @@ Let's dig our question ``Hey, show me all the edits made in Bangalore today` to 
 This question has three parts to it:
 1. `all the edits` - this is inclusive of all the feature types - buildings, highways. This part can be made very specific to say `all building edits` or `all highway edits`
 2. `edits made in Bangalore` - question is specific to a place
-3. `edits made in Bangalore **today**` - edits made from the start of the day to the current time. 
+3. `edits made today` - edits made from the start of the day to the current time. 
 
 All the three factors - kind of features edited, geography and timeframe are variable. We've to choose an option that could fit in these three factors.
 
 Option|Feature filtering|Geography filter|Time filter
 ------|-----------------|----------------|-----------
-Query OpenStreetMap directly from user interface using `Export` option| :heavy_multiplication_x:|only rectangluar bounding box|:x:
-OpenStreetMap API|:heavy_multiplication_x:|only rectangluar bounding box|:x:
+Query OpenStreetMap directly from user interface using `Export` option| :heavy_multiplication_x:|only rectangluar bounding box|:heavy_multiplication_x:
+OpenStreetMap API|:heavy_multiplication_x:|only rectangluar bounding box|:heavy_multiplication_x:
 Overpass (read only API)|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:
 [planet](https://planet.openstreetmap.org/)/[geofabrik](http://download.geofabrik.de/)/[metro extracts](https://mapzen.com/documentation/metro-extracts/)|custom script|custom script|custom script
 
