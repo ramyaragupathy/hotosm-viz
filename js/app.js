@@ -162,7 +162,6 @@ function getData (callback) {
  *
  *  @param {string} message - custom error message for different scenarios
  *  @param {number} time - time in milliseconds
- *
  **/
 
 function errorNotice (message, time) {
