@@ -21,27 +21,36 @@ Objective is to view the edits made in a particular geography after a mapping ev
 
 ### Data Extraction 
 
-This is like questioning OpenStreetMap on `Hey, show me all the edits made in Bangalore today`. Now this question can be put to OpenStreetMap in several ways. 
+This is like questioning OpenStreetMap on `Hey, show me all the edits made in Bangalore today`. This question can be put to OpenStreetMap in several ways. 
 
 1. Query OpenStreetMap directly from user interface using `Export` option
 2. [OpenStreetMap API](https://wiki.openstreetmap.org/wiki/API)
 3. Use a third party tool like [Overpass](overpass-turbo.eu)
 4. Using [planet](https://planet.openstreetmap.org/)/[geofabrik](http://download.geofabrik.de/)/[metro extracts](https://mapzen.com/documentation/metro-extracts/) and then write a script to extract specifc data from downloaded extracts 
 
-All the above options have their merits in different situations. In our case, API requests are the way forward to have results integrated in a web app. So we've narrowed two options that satisfies our criteria.
-`Option 2(OpenStreetMap API) and Option 3 (Overpass)`
+All the above options have their merits in different situations. 
+Let's dig our question ``Hey, show me all the edits made in Bangalore today` to understand which option is better.
 
-OpenStreetMap API is an `editing API` that lets reading and adding contents to OpenStreetMap database. Overpass provides a read-only API, but provides more options to filter out data using [Overpss Query Language](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL).
+This question has three parts to it:
+1. `all the edits` - this is inclusive of all the feature types - buildings, highways. This part can be made very specific to say `all building edits` or `all highway edits`
+2. `edits made in Bangalore` - question is specific to a place
+3. `edits made in Bangalore **today**` - edits made from the start of the day to the current time. 
+
+All the three factors - kind of features edited, geography and timeframe are variable. We've to choose an option that could fit in these three factors.
+
+Option|Feature filtering|Geography filter|Time filter
+------|-----------------|----------------|-----------
+Query OpenStreetMap directly from user interface using `Export` option| :heavy_multiplication_x:|only rectangluar bounding box|:x:
+OpenStreetMap API|:heavy_multiplication_x:|only rectangluar bounding box|:x:
+Overpass (read only API)|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:
+[planet](https://planet.openstreetmap.org/)/[geofabrik](http://download.geofabrik.de/)/[metro extracts](https://mapzen.com/documentation/metro-extracts/)|custom script|custom script|custom script
+
 
 Overpass is great for:
 - Querying features by [OSM tags](https://wiki.openstreetmap.org/wiki/Tags)
 - Looking for features that was edited within a time range
 - Find features added by a particular user or group of users
 - Querying rectangular bounding boxes and polygon boundaries
-
-At present I don't see tags or user specific filtering options with OpenStreetMap API. Also polygon boundaries are not supported.
-
-Polygon boundaries and tag specific filtering are key to HOTOSM visualisation. Based on these two factors, I decided to go with Overpass API option.
 
 ### Implementing Data Extaction
 
