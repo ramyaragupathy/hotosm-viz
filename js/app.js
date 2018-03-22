@@ -2,25 +2,38 @@ const osmtogeojson = require('osmtogeojson')
 const util = require('util')
 const moment = require('moment')
 
+// Inittialising map
+
 mapboxgl.accessToken = 'pk.eyJ1IjoicnVtYyIsImEiOiJjamJhdHJzODUxMGUyMnFub2l3cTlmMTJnIn0.hTkMVvU1xz2StHhaEYuMIA'
 let map = new mapboxgl.Map({
   container: 'map', // container id
-  style: 'mapbox://styles/mapbox/light-v9', // stylesheet location
-  center: [-122.2014, 37.7758], // starting position [lng, lat]
-  zoom: 9, // starting zoom
-  hash: true
+  style: 'mapbox://styles/mapbox/light-v9',
+  center: [-122.2014, 37.7758],
+  zoom: 9,
+  hash: true,
+  attributionControl: false
 })
-var geocoder = new MapboxGeocoder({
+
+// Adding navigation controls
+
+// geocoder
+let geocoder = new MapboxGeocoder({
   accessToken: mapboxgl.accessToken
 })
 map.addControl(geocoder)
-var nav = new mapboxgl.NavigationControl()
+// zoom
+let nav = new mapboxgl.NavigationControl()
 map.addControl(nav, 'top-left')
+// position attribution to bottom-left
+map.addControl(new mapboxgl.AttributionControl(), 'bottom-left')
+
 $('#fromdate').val(moment().format('YYYY-MM-DD[T]00:00:01'))
 $('#todate').val(moment().format('YYYY-MM-DD[T]HH:mm:ss'))
 
-var formData = {}
-var overpassDataSource = {
+// Set initial values
+
+let formData = {}
+let overpassDataSource = {
   'type': 'FeatureCollection',
   'features': []
 }
@@ -31,6 +44,14 @@ map.on('load', function () {
   map.addSource('overpassDataSource', {type: 'geojson', data: overpassDataSource})
 })
 
+// Functions
+
+/**
+ * This function frames the overpass query based on the map view and timeframe
+ *
+ *  @returns {string} url - overpass query for fetching data
+ **/
+
 function getQuery () {
   let bounds = map.getBounds()
   let north = bounds['_ne'].lat
@@ -38,6 +59,7 @@ function getQuery () {
   let south = bounds['_sw'].lat
   let west = bounds['_sw'].lng
   let bbox = south + ',' + west + ',' + north + ',' + east
+  let overpassDate
 
   if (formData.fromDate != '' && formData.toDate != '') {
     overpassDate = "(changed:'" + formData.fromDate + "','" + formData.toDate + "')"
@@ -47,43 +69,43 @@ function getQuery () {
 
   // for osm 'https://api.openstreetmap.org/api/0.6/map?bbox='+bbox;
 
-  query += bbox
-  var query = util.format(q, overpassDate, bbox, overpassDate, bbox, overpassDate, bbox)
-  var url = 'https://www.overpass-api.de/api/interpreter?data=' + query
+  let query = util.format(q, overpassDate, bbox, overpassDate, bbox, overpassDate, bbox)
+  let url = 'https://www.overpass-api.de/api/interpreter?data=' + query
 
   return url
 }
-function handleClick (cb) {
-  console.log('Clicked, new value = ' + cb.checked)
-}
+
+/**
+ * Invokes getQuery() function to frame the overpass query
+ * Fetches data using the overpass query
+ * Converts XML data to geojson
+ * Adds three layers using geojson data
+ * Adds a legend & geometry count to the page
+ *
+ *  @param {function} callback - callback
+ **/
 
 function getData (callback) {
-  var url = getQuery()
+  let url = getQuery()
   $('.loading').css('display', 'inline-block')
   $.ajax(url)
     .done(function (data) {
-      console.log('osm ', data)
-      var geojson = osmtogeojson(data)
-      console.log('osm to geojson ', geojson)
-      var ways = geojson.features.filter(function (item) {
+      let geojson = osmtogeojson(data)
+      let ways = geojson.features.filter(function (item) {
         if (item.id.startsWith('way')) {
           return item
         }
       })
-      var rels = geojson.features.filter(function (item) {
+      let rels = geojson.features.filter(function (item) {
         if (item.id.startsWith('relation')) {
           return item
         }
       })
-      var nodes = geojson.features.filter(function (item) {
+      let nodes = geojson.features.filter(function (item) {
         if (item.id.startsWith('node')) {
           return item
         }
       })
-
-      console.log('Ways ', ways.length)
-      console.log('Rels ', rels.length)
-      console.log('nodes ', nodes.length)
       map.getSource('overpassDataSource').setData(geojson)
       map.addLayer({
         'id': 'node',
@@ -119,17 +141,15 @@ function getData (callback) {
 
       let countStr = `<p><h3>Feature breakdown:</h3>
       <input type="checkbox"  name="node" id="node" checked="true">
-      <label for="node">Nodes: ${nodes.length}</label><br>
+      <label for="node"> Nodes: ${nodes.length} </label><br>
       <input type="checkbox" name="way" id="way" checked="true">
-      <label for="way">Ways: ${ways.length}</label><br>
+      <label for="way"> Ways: ${ways.length} </label><br>
       <input type="checkbox" name="rel" id="rel" checked="true">
-      <label for="rel">Relations: ${rels.length}</label>
+      <label for="rel"> Relations: ${rels.length} </label>
       </p>`
       document.getElementById('count').classList.add('fill-gray')
       document.getElementById('count').innerHTML = countStr
-      $('node').on('click', function(e) {
-        console.log('node')
-    });
+      document.getElementById('map-legend').style.display = 'block'
       $('.loading').css('display', 'none')
     })
     .fail(function () {
@@ -137,7 +157,13 @@ function getData (callback) {
     })
 }
 
-
+/**
+ * Displays error messages for fetch data failures
+ *
+ *  @param {string} message - custom error message for different scenarios
+ *  @param {number} time - time in milliseconds
+ *
+ **/
 
 function errorNotice (message, time) {
   $('.note').css('display', 'block')
@@ -153,17 +179,18 @@ function errorNotice (message, time) {
   }
 }
 
+// Fetch Data on Click
+
 $('#submit').on('click', function () {
   document.getElementById('count').innerHTML = ''
   document.getElementById('count').classList.remove('fill-gray')
-
   let zoom = map.getZoom()
   if (zoom >= 5) {
     formData = {
       'fromDate': moment($('#fromdate').val()).utc().toISOString(),
       'toDate': moment($('#todate').val()).utc().toISOString()
     }
-    var url = getQuery()
+    let url = getQuery()
     console.log('from submit before fetching ', url)
     getData()
   } else {

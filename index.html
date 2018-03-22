@@ -12,20 +12,18 @@
     <link rel="stylesheet" type="text/css" href="css/app.css">
     <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.2.0/mapbox-gl-geocoder.min.js'></script>
     <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.2.0/mapbox-gl-geocoder.css' type='text/css' />
-   
-   
+
+
 </head>
 
 <body>
-        
+
     <div class='queries col4 pad2 '>
-            <div id ='desc' class='prose prose-big quiet space-bottom4 '>
-                    <p>
-                        Hi there! Zoom in to your area of interest & pick a time slot
-                        from the dropdown here. Hit `Fetch Data` to see all the Edits
-                        in the area within your chosen timeframe!
-                    </p>
-                </div>
+        <div id='desc' class='prose prose-big quiet space-bottom4 '>
+            <p>
+                Hi there! Zoom in to your area of interest & pick a time slot from the dropdown here. Hit `Fetch Data` to see all the Edits in the area within your chosen timeframe!
+            </p>
+        </div>
         <div class='note warning col11 pad1x' style='display:none'>
             <p></p>
         </div>
@@ -46,13 +44,19 @@
                 <a href='#' id='submit' class='button'>Fetch Data</a>
             </div>
         </form>
-       
+
     </div>
     <div id='count' class="col4 pad2 prose prose-big"></div>
     <div id="menu" class="bottom-right"></div>
     <div id='map'></div>
- 
+    <div id='map-legend' class='legend'>
+        <div id='node'><span style='background-color: #8C5E58'></span>Nodes</div>
+        <div id='way'><span style='background-color: #FF7E6B'></span>Ways</div>
+        <div id='relations'><span style='background-color: #F6E27F'></span>Relations</div>
+    </div>
+    <script src="dist/bundle.js"></script>
+
 </body>
-<script src="dist/bundle.js"></script>
+
 
 </html>
