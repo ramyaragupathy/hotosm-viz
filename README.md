@@ -9,6 +9,10 @@ Prototype for [HOTOSM Outreachy project](https://www.outreachy.org/2018-may-augu
 ## How does it work?
 ![working](https://user-images.githubusercontent.com/12103383/37751157-e53a5512-2db6-11e8-87f3-3531a1444fe7.gif)
 
+![image](https://user-images.githubusercontent.com/12103383/37755592-1c4edaae-2dcc-11e8-9e17-77a40eec51c8.png) relations
+![image](https://user-images.githubusercontent.com/12103383/37755607-3067b006-2dcc-11e8-8992-ae171be40b41.png) ways
+![image](https://user-images.githubusercontent.com/12103383/37755628-4445a6b4-2dcc-11e8-8888-4622d9691c4f.png) nodes
+
 * By default, time period is set for current date and current time
 * Map area in view is by default taken to be the bounding box for the query
 * Choose the right map view by navigating the map
@@ -72,7 +76,7 @@ But before we go ahead, it's necessary to understand limitations to Overpass lik
   let bbox = south + ',' + west + ',' + north + ',' + east
   ```
 
-**Time filter** - Provide two field to gather start date and end date for the query. Default sets to today's timeframe.
+**Time filter** - Provide two fields to gather start date and end date for the query. Default sets to today's timeframe.
 
 ![image](https://user-images.githubusercontent.com/12103383/37754543-ef84723a-2dc7-11e8-9642-306330ccbb52.png)
 
@@ -90,11 +94,9 @@ Processed data is separated into three layers(node, way, relation) for map viz u
 
 ![image](https://user-images.githubusercontent.com/12103383/37755301-f3dd49e4-2dca-11e8-8b52-c05e4c2ebfc6.png)
 
-Color|Feature
-------|--------
-![image](https://user-images.githubusercontent.com/12103383/37755046-e11aa7ee-2dc9-11e8-902c-68d7a14a9877.png)|relations
-![image](https://user-images.githubusercontent.com/12103383/37755077-fca271ea-2dc9-11e8-871b-a942b64f4481.png)|ways
-![image](https://user-images.githubusercontent.com/12103383/37755094-0bfb70a6-2dca-11e8-9102-ff78b259d37e.png)|nodes
+![image](https://user-images.githubusercontent.com/12103383/37755592-1c4edaae-2dcc-11e8-9e17-77a40eec51c8.png) relations
+![image](https://user-images.githubusercontent.com/12103383/37755607-3067b006-2dcc-11e8-8992-ae171be40b41.png) ways
+![image](https://user-images.githubusercontent.com/12103383/37755628-4445a6b4-2dcc-11e8-8888-4622d9691c4f.png) nodes
 
 This layering will change when tag filering comes into play.
 
