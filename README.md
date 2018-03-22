@@ -88,13 +88,15 @@ This is sent to the overpass API and the result is obtained in `xml` format. Oth
 
 Processed data is separated into three layers(node, way, relation) for map viz using [mapbox-gl js](https://www.mapbox.com/mapbox-gl-js/api/) and the count for each geometry is shown in the side bar. 
 
+![image](https://user-images.githubusercontent.com/12103383/37755301-f3dd49e4-2dca-11e8-8b52-c05e4c2ebfc6.png)
+
 Color|Feature
 ------|--------
 ![image](https://user-images.githubusercontent.com/12103383/37755046-e11aa7ee-2dc9-11e8-902c-68d7a14a9877.png)|relations
 ![image](https://user-images.githubusercontent.com/12103383/37755077-fca271ea-2dc9-11e8-871b-a942b64f4481.png)|ways
 ![image](https://user-images.githubusercontent.com/12103383/37755094-0bfb70a6-2dca-11e8-9102-ff78b259d37e.png)|nodes
 
-This could when tag filering comes into play. Geometry layering would change to tag related layering style
+This layering will change when tag filering comes into play.
 
 **View by geometry/feature** - Each geometry type has a checkbox next to it. Based on what is checked, layers should display/disappear on the map
 
