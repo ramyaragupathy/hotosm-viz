@@ -851,6 +851,8 @@ let head = '[out:xml][timeout:25];'
 let q = head + '(node %s (%s));(way %s(%s));(rel %s (%s));out body;>;out body qt;'
 map.on('load', function () {
   map.addSource('overpassDataSource', {type: 'geojson', data: overpassDataSource})
+  let projects = getProjects()
+  console.log(projects[0])
 })
 
 // Functions
@@ -891,10 +893,9 @@ function getQuery () {
  * Adds three layers using geojson data
  * Adds a legend & geometry count to the page
  *
- *  @param {function} callback - callback
  **/
 
-function getData (callback) {
+function getData () {
   let url = getQuery()
   $('.loading').css('display', 'inline-block')
   $.ajax(url)
@@ -971,7 +972,6 @@ function getData (callback) {
  *
  *  @param {string} message - custom error message for different scenarios
  *  @param {number} time - time in milliseconds
- *
  **/
 
 function errorNotice (message, time) {
@@ -986,6 +986,28 @@ function errorNotice (message, time) {
       $('.note').css('display', 'none')
     }, 2000)
   }
+}
+
+/**
+ * Fetches all ative projects using HOTOSM API
+ *
+ **/
+
+function getProjects () {
+  let url = 'https://tasks.hotosm.org/api/v1/project/search'
+  let projects = []
+  $.ajax(url)
+    .done(function (data) {
+      data.mapResults.features.forEach(function (project) {
+        projects.push(project.properties.projectId)
+        console.log(projects)
+      })
+      return projects
+    })
+    .fail(function () {
+      errorNotice('Too much data to fetch, zoom in further')
+    })
+
 }
 
 // Fetch Data on Click
