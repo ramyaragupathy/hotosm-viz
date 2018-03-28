@@ -993,8 +993,18 @@ function errorNotice (message, time) {
 
 document.getElementById('projects').addEventListener('change', function (e) {
   let projectID = this.value
-  console.log(projectID)
+  projDetails(projectID)
 })
+
+/**
+ * Fetches complete details of a particular HOTOSM project
+ *
+ * @param {number} projectID - Unique ID of a HOTOSM project
+ **/
+
+function projDetails (projectID) {
+ console.log('From projDetails: ', projectID)
+}
 
 // Fetch Data on Click
 
