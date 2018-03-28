@@ -41,9 +41,10 @@ let overpassDataSource = {
 let head = '[out:xml][timeout:25];'
 let q = head + '(node %s (%s));(way %s(%s));(rel %s (%s));out body;>;out body qt;'
 map.on('load', function () {
+  $('.loading').css('display', 'block')
   map.addSource('overpassDataSource', {type: 'geojson', data: overpassDataSource})
-  let projects = getProjects()
-  console.log(projects[0])
+  getProjects()
+  $('.loading').css('display', 'none')
 })
 
 // Functions
@@ -186,19 +187,18 @@ function errorNotice (message, time) {
 
 function getProjects () {
   let url = 'https://tasks.hotosm.org/api/v1/project/search'
-  let projects = []
   $.ajax(url)
     .done(function (data) {
+      let select = document.getElementById('projects')
       data.mapResults.features.forEach(function (project) {
-        projects.push(project.properties.projectId)
-        console.log(projects)
+        let option = document.createElement('option')
+        option.text = option.value = project.properties.projectId
+        select.add(option, 0)
       })
-      return projects
     })
     .fail(function () {
       errorNotice('Too much data to fetch, zoom in further')
     })
-
 }
 
 // Fetch Data on Click
