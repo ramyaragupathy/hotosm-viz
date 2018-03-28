@@ -987,23 +987,33 @@ function errorNotice (message, time) {
 }
 
 /**
- * Event listener for project selection
+ * Construct URL to request a particular project details
  *
  **/
 
-document.getElementById('projects').addEventListener('change', function (e) {
-  let projectID = this.value
-  projDetails(projectID)
-})
+function getProjQuery () {
+  let projectID = document.getElementById('projects').value
+  let url = 'https://tasks.hotosm.org/api/v1/project/' + projectID + '?as_file=false'
+  return url
+}
 
 /**
  * Fetches complete details of a particular HOTOSM project
  *
- * @param {number} projectID - Unique ID of a HOTOSM project
  **/
 
-function projDetails (projectID) {
- console.log('From projDetails: ', projectID)
+function getProjDetails () {
+  let url = getProjQuery()
+  console.log('From projDetails: ', url)
+  $.ajax(url)
+    .done(function (data) {
+      let polygon = data.areaOfInterest
+      let entities = data.mappingTypes
+      console.log(entities)
+      console.log(polygon)
+    })
+    .fail(function () {
+    })
 }
 
 // Fetch Data on Click
@@ -1017,8 +1027,7 @@ $('#submit').on('click', function () {
       'fromDate': moment($('#fromdate').val()).utc().toISOString(),
       'toDate': moment($('#todate').val()).utc().toISOString()
     }
-    let url = getQuery()
-    console.log('from submit before fetching ', url)
+    getProjDetails()
     getData()
   } else {
     errorNotice('Zoom in further to fetch results')
