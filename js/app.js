@@ -41,10 +41,7 @@ let overpassDataSource = {
 let head = '[out:xml][timeout:25];'
 let q = head + '(node %s (%s));(way %s(%s));(rel %s (%s));out body;>;out body qt;'
 map.on('load', function () {
-  $('.loading').css('display', 'block')
   map.addSource('overpassDataSource', {type: 'geojson', data: overpassDataSource})
-  getProjects()
-  $('.loading').css('display', 'none')
 })
 
 // Functions
@@ -181,25 +178,14 @@ function errorNotice (message, time) {
 }
 
 /**
- * Fetches all ative projects using HOTOSM API
+ * Event listener for project selection
  *
  **/
 
-function getProjects () {
-  let url = 'https://tasks.hotosm.org/api/v1/project/search'
-  $.ajax(url)
-    .done(function (data) {
-      let select = document.getElementById('projects')
-      data.mapResults.features.forEach(function (project) {
-        let option = document.createElement('option')
-        option.text = option.value = project.properties.projectId
-        select.add(option, 0)
-      })
-    })
-    .fail(function () {
-      errorNotice('Too much data to fetch, zoom in further')
-    })
-}
+document.getElementById('projects').addEventListener('change', function (e) {
+  let projectID = this.value
+  console.log(projectID)
+})
 
 // Fetch Data on Click
 

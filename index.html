@@ -12,7 +12,23 @@
     <link rel="stylesheet" type="text/css" href="css/app.css">
     <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.2.0/mapbox-gl-geocoder.min.js'></script>
     <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.2.0/mapbox-gl-geocoder.css' type='text/css' />
-
+    <script>
+    window.onload = function () {
+        let url = 'https://tasks.hotosm.org/api/v1/project/search'
+        $.ajax(url)
+            .done(function (data) {
+            let select = document.getElementById('projects')
+            data.mapResults.features.forEach(function (project) {
+                let option = document.createElement('option')
+                option.text = option.value = project.properties.projectId
+                select.add(option, 0)
+            })
+            })
+            .fail(function () {
+           })
+        }
+    
+    </script>
 
 </head>
 
