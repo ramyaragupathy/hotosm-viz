@@ -2,7 +2,7 @@ const osmtogeojson = require('osmtogeojson')
 const util = require('util')
 const moment = require('moment')
 
-// Inittialising map
+// Initialising map
 
 mapboxgl.accessToken = 'pk.eyJ1IjoicnVtYyIsImEiOiJjamJhdHJzODUxMGUyMnFub2l3cTlmMTJnIn0.hTkMVvU1xz2StHhaEYuMIA'
 let map = new mapboxgl.Map({
@@ -21,9 +21,11 @@ let geocoder = new MapboxGeocoder({
   accessToken: mapboxgl.accessToken
 })
 map.addControl(geocoder)
+
 // zoom
 let nav = new mapboxgl.NavigationControl()
 map.addControl(nav, 'top-left')
+
 // position attribution to bottom-left
 map.addControl(new mapboxgl.AttributionControl(), 'bottom-left')
 
@@ -49,7 +51,7 @@ map.on('load', function () {
 /**
  * This function frames the overpass query based on the map view and timeframe
  *
- *  @returns {string} url - overpass query for fetching data
+ * @returns {string} url - overpass query for fetching data
  **/
 
 function getQuery () {
@@ -159,8 +161,8 @@ function getData () {
 /**
  * Displays error messages for fetch data failures
  *
- *  @param {string} message - custom error message for different scenarios
- *  @param {number} time - time in milliseconds
+ * @param {string} message - custom error message for different scenarios
+ * @param {number} time - time in milliseconds
  **/
 
 function errorNotice (message, time) {
@@ -180,6 +182,7 @@ function errorNotice (message, time) {
 /**
  * Construct URL to request a particular project details
  *
+ * @returns {string} url - project specific url to fetch details
  **/
 
 function getProjQuery () {
