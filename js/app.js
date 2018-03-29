@@ -201,10 +201,15 @@ function getProjDetails () {
   console.log('From projDetails: ', url)
   $.ajax(url)
     .done(function (data) {
-      let polygon = data.areaOfInterest
+      let multiPolygon = data.areaOfInterest
       let entities = data.mappingTypes
       console.log(entities)
-      console.log(polygon)
+      console.log(multiPolygon)
+      multiPolygon.coordinates.forEach(function (coords) {
+        let feat = {'type': 'Polygon', 'coordinates': coords}
+        console.log(JSON.stringify(feat))
+      }
+      )
     })
     .fail(function () {
     })
