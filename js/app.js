@@ -50,17 +50,23 @@ map.on('load', function () {
 
 /**
  * This function frames the overpass query based on the map view and timeframe
+ * @param {string} bbox - space separated polygon coordinates (lat1 lng1 lat2 lng2 ... latn lngn)
  *
  * @returns {string} url - overpass query for fetching data
  **/
 
-function getQuery () {
-  let bounds = map.getBounds()
-  let north = bounds['_ne'].lat
-  let east = bounds['_ne'].lng
-  let south = bounds['_sw'].lat
-  let west = bounds['_sw'].lng
-  let bbox = south + ',' + west + ',' + north + ',' + east
+function getQuery (bbox) {
+  if (bbox) {
+    bbox = 'poly:"' + bbox + '"'
+  } else {
+    let bounds = map.getBounds()
+    let north = bounds['_ne'].lat
+    let east = bounds['_ne'].lng
+    let south = bounds['_sw'].lat
+    let west = bounds['_sw'].lng
+    bbox = south + ',' + west + ',' + north + ',' + east
+  }
+
   let overpassDate
 
   if (formData.fromDate != '' && formData.toDate != '') {
@@ -206,8 +212,15 @@ function getProjDetails () {
       console.log(entities)
       console.log(multiPolygon)
       multiPolygon.coordinates.forEach(function (coords) {
-        let feat = {'type': 'Polygon', 'coordinates': coords}
-        console.log(JSON.stringify(feat))
+        let polygon = {'type': 'Polygon', 'coordinates': coords}
+        let bbox = ''
+        coords.forEach(function (item) {
+          item.forEach(function (subItem) {
+            bbox += subItem[1] + ' ' + subItem[0]
+          })
+        })
+        console.log(JSON.stringify(polygon))
+        console.log('poly query: ', getQuery(bbox))
       }
       )
     })
