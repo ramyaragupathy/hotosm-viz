@@ -92,8 +92,8 @@ function getQuery (bbox) {
  *
  **/
 
-function getData () {
-  let url = getQuery()
+function getData (url) {
+  if (!url) { url = getQuery() }
   $('.loading').css('display', 'inline-block')
   $.ajax(url)
     .done(function (data) {
@@ -209,9 +209,11 @@ function getProjDetails () {
     .done(function (data) {
       let multiPolygon = data.areaOfInterest
       let entities = data.mappingTypes
+      let count = 0
       console.log(entities)
       console.log(multiPolygon)
       multiPolygon.coordinates.forEach(function (coords) {
+        count++
         let polygon = {'type': 'Polygon', 'coordinates': coords}
         let bbox = ''
         coords.forEach(function (item) {
@@ -220,7 +222,8 @@ function getProjDetails () {
           })
         })
         console.log(JSON.stringify(polygon))
-        console.log('poly query: ', getQuery(bbox))
+        console.log(count)
+        getData(getQuery(bbox))
       }
       )
     })
@@ -240,7 +243,8 @@ $('#submit').on('click', function () {
       'toDate': moment($('#todate').val()).utc().toISOString()
     }
     getProjDetails()
-    getData()
+    
+    //getData()
   } else {
     errorNotice('Zoom in further to fetch results')
   }
