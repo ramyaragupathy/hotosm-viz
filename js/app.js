@@ -1,6 +1,8 @@
 const osmtogeojson = require('osmtogeojson')
 const util = require('util')
 const moment = require('moment')
+const geojsonMerge = require('@mapbox/geojson-merge')
+const terraformer = require('terraformer')
 
 // Initialising map
 
@@ -34,6 +36,7 @@ $('#todate').val(moment().format('YYYY-MM-DD[T]HH:mm:ss'))
 
 // Set initial values
 
+let prevGeojson = ''
 let formData = {}
 let overpassDataSource = {
   'type': 'FeatureCollection',
@@ -57,7 +60,8 @@ map.on('load', function () {
 
 function getQuery (bbox) {
   if (bbox) {
-    bbox = 'poly:"' + bbox + '"'
+    //bbox = 'poly:"' + bbox + '"'
+    bbox = bbox[1] + ',' + bbox[0] + ',' + bbox[3] + ',' + bbox[2]
   } else {
     let bounds = map.getBounds()
     let north = bounds['_ne'].lat
@@ -215,15 +219,30 @@ function getProjDetails () {
       multiPolygon.coordinates.forEach(function (coords) {
         count++
         let polygon = {'type': 'Polygon', 'coordinates': coords}
-        let bbox = ''
-        coords.forEach(function (item) {
-          item.forEach(function (subItem) {
-            bbox += subItem[1] + ' ' + subItem[0]
-          })
-        })
+        // let bbox = ''
+        // coords.forEach(function (item) {
+        //   item.forEach(function (subItem) {
+        //     bbox += subItem[1] + ' ' + subItem[0]
+        //   })
+        // })
         console.log(JSON.stringify(polygon))
         console.log(count)
-        getData(getQuery(bbox))
+        let polygonTerraform = new terraformer.Primitive(polygon)
+        let polygonBbox = polygonTerraform.bbox()
+        console.log('bbox of a polygon ', polygonBbox)
+        let polygonUrl = getQuery(polygonBbox)
+        console.log(polygonUrl)
+        $.ajax(polygonUrl)
+          .done(function (data) {
+            let geojson = osmtogeojson(data)
+            var mergedStream = geojsonMerge.merge([ prevGeojson, geojson.features ])
+            mergedStream.pipe(process.stdout)
+            console.log(mergedStream)
+
+          })
+          .fail(function () {
+            errorNotice('Too much data to fetch, zoom in further')
+          })
       }
       )
     })
@@ -243,8 +262,8 @@ $('#submit').on('click', function () {
       'toDate': moment($('#todate').val()).utc().toISOString()
     }
     getProjDetails()
-    
-    //getData()
+
+    // getData()
   } else {
     errorNotice('Zoom in further to fetch results')
   }
