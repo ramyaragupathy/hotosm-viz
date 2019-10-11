@@ -1,8 +1,10 @@
 const osmtogeojson = require('osmtogeojson')
 const util = require('util')
 const moment = require('moment')
+const geojsonMerge = require('@mapbox/geojson-merge')
+const terraformer = require('terraformer')
 
-// Inittialising map
+// Initialising map
 
 mapboxgl.accessToken = 'pk.eyJ1IjoicnVtYyIsImEiOiJjamJhdHJzODUxMGUyMnFub2l3cTlmMTJnIn0.hTkMVvU1xz2StHhaEYuMIA'
 let map = new mapboxgl.Map({
@@ -21,9 +23,11 @@ let geocoder = new MapboxGeocoder({
   accessToken: mapboxgl.accessToken
 })
 map.addControl(geocoder)
+
 // zoom
 let nav = new mapboxgl.NavigationControl()
 map.addControl(nav, 'top-left')
+
 // position attribution to bottom-left
 map.addControl(new mapboxgl.AttributionControl(), 'bottom-left')
 
@@ -32,6 +36,7 @@ $('#todate').val(moment().format('YYYY-MM-DD[T]HH:mm:ss'))
 
 // Set initial values
 
+let prevGeojson = ''
 let formData = {}
 let overpassDataSource = {
   'type': 'FeatureCollection',
@@ -48,17 +53,24 @@ map.on('load', function () {
 
 /**
  * This function frames the overpass query based on the map view and timeframe
+ * @param {string} bbox - space separated polygon coordinates (lat1 lng1 lat2 lng2 ... latn lngn)
  *
- *  @returns {string} url - overpass query for fetching data
+ * @returns {string} url - overpass query for fetching data
  **/
 
-function getQuery () {
-  let bounds = map.getBounds()
-  let north = bounds['_ne'].lat
-  let east = bounds['_ne'].lng
-  let south = bounds['_sw'].lat
-  let west = bounds['_sw'].lng
-  let bbox = south + ',' + west + ',' + north + ',' + east
+function getQuery (bbox) {
+  if (bbox) {
+    //bbox = 'poly:"' + bbox + '"'
+    bbox = bbox[1] + ',' + bbox[0] + ',' + bbox[3] + ',' + bbox[2]
+  } else {
+    let bounds = map.getBounds()
+    let north = bounds['_ne'].lat
+    let east = bounds['_ne'].lng
+    let south = bounds['_sw'].lat
+    let west = bounds['_sw'].lng
+    bbox = south + ',' + west + ',' + north + ',' + east
+  }
+
   let overpassDate
 
   if (formData.fromDate != '' && formData.toDate != '') {
@@ -82,11 +94,10 @@ function getQuery () {
  * Adds three layers using geojson data
  * Adds a legend & geometry count to the page
  *
- *  @param {function} callback - callback
  **/
 
-function getData (callback) {
-  let url = getQuery()
+function getData (url) {
+  if (!url) { url = getQuery() }
   $('.loading').css('display', 'inline-block')
   $.ajax(url)
     .done(function (data) {
@@ -160,8 +171,8 @@ function getData (callback) {
 /**
  * Displays error messages for fetch data failures
  *
- *  @param {string} message - custom error message for different scenarios
- *  @param {number} time - time in milliseconds
+ * @param {string} message - custom error message for different scenarios
+ * @param {number} time - time in milliseconds
  **/
 
 function errorNotice (message, time) {
@@ -178,6 +189,67 @@ function errorNotice (message, time) {
   }
 }
 
+/**
+ * Construct URL to request a particular project details
+ *
+ * @returns {string} url - project specific url to fetch details
+ **/
+
+function getProjQuery () {
+  let projectID = document.getElementById('projects').value
+  let url = 'https://tasks.hotosm.org/api/v1/project/' + projectID + '?as_file=false'
+  return url
+}
+
+/**
+ * Fetches complete details of a particular HOTOSM project
+ *
+ **/
+
+function getProjDetails () {
+  let url = getProjQuery()
+  console.log('From projDetails: ', url)
+  $.ajax(url)
+    .done(function (data) {
+      let multiPolygon = data.areaOfInterest
+      let entities = data.mappingTypes
+      let count = 0
+      console.log(entities)
+      console.log(multiPolygon)
+      multiPolygon.coordinates.forEach(function (coords) {
+        count++
+        let polygon = {'type': 'Polygon', 'coordinates': coords}
+        // let bbox = ''
+        // coords.forEach(function (item) {
+        //   item.forEach(function (subItem) {
+        //     bbox += subItem[1] + ' ' + subItem[0]
+        //   })
+        // })
+        console.log(JSON.stringify(polygon))
+        console.log(count)
+        let polygonTerraform = new terraformer.Primitive(polygon)
+        let polygonBbox = polygonTerraform.bbox()
+        console.log('bbox of a polygon ', polygonBbox)
+        let polygonUrl = getQuery(polygonBbox)
+        console.log(polygonUrl)
+        $.ajax(polygonUrl)
+          .done(function (data) {
+            let geojson = osmtogeojson(data)
+            var mergedStream = geojsonMerge.merge([ prevGeojson, geojson.features ])
+            mergedStream.pipe(process.stdout)
+            console.log(mergedStream)
+
+          })
+          .fail(function () {
+            errorNotice('Too much data to fetch, zoom in further')
+          })
+      }
+      )
+    })
+    .fail(function () {
+    })
+}
+
 // Fetch Data on Click
 
 $('#submit').on('click', function () {
@@ -189,9 +261,9 @@ $('#submit').on('click', function () {
       'fromDate': moment($('#fromdate').val()).utc().toISOString(),
       'toDate': moment($('#todate').val()).utc().toISOString()
     }
-    let url = getQuery()
-    console.log('from submit before fetching ', url)
-    getData()
+    getProjDetails()
+
+    // getData()
   } else {
     errorNotice('Zoom in further to fetch results')
   }
